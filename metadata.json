@@ -1,0 +1,7 @@
+{
+  "name": "Aura Quality: Air & Health Advisor",
+  "description": "A comprehensive web application that provides real-time air quality data, personalized health recommendations, and educational insights into atmospheric phenomena. Track AQI, understand its impact, and get actionable advice tailored to your health profile.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
