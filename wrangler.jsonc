@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aura-quality",
+  "compatibility_date": "2024-01-01",
+  "pages_build_output_dir": "./dist",
+  "compatibility_flags": ["nodejs_compat"],
+  
+  // D1 Database for storing user profiles and AQI history
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "aura-quality-db",
+      "database_id": "placeholder-will-be-filled-after-creation"
+    }
+  ]
+}

@@ -1,3 +1,13 @@
+# Dependencies
+node_modules
+.pnpm-debug.log*
+
+# Build output
+dist
+dist-ssr
+.wrangler
+.dev.vars
+
 # Logs
 logs
 *.log
@@ -7,10 +17,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Local environment
 *.local
+.env
+.env.local
+.env.production
+
+# PM2
+.pm2
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +40,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backup files
+*.backup
+*.bak
+*.tar.gz
+*.zip
