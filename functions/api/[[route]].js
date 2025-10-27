@@ -301,6 +301,18 @@ function generateMockAQIData(lat, lng, locationName) {
   };
 }
 
+// Serve the static HTML for non-API routes
+app.get('*', async (c) => {
+  const url = new URL(c.req.url);
+  
+  // If it's not an API route, let Cloudflare Pages serve the static files
+  if (!url.pathname.startsWith('/api/')) {
+    return c.notFound();
+  }
+  
+  return c.notFound();
+});
+
 // Export for Cloudflare Pages Functions
 export function onRequest(context) {
   return app.fetch(context.request, context.env, context);
