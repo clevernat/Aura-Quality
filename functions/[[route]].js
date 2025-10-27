@@ -1,23 +1,10 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { serveStatic } from 'hono/cloudflare-workers';
 
-// Type definitions for Cloudflare bindings
-type Bindings = {
-  DB: D1Database;
-  GEMINI_API_KEY: string;
-  OPENWEATHERMAP_API_KEY?: string;
-  IQAIR_API_KEY?: string;
-};
-
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono();
 
 // Enable CORS for API routes
 app.use('/api/*', cors());
-
-// Serve static files
-app.use('/static/*', serveStatic({ root: './public' }));
-app.use('/assets/*', serveStatic({ root: './dist' }));
 
 // ============================================
 // API ROUTES - User Management
@@ -201,7 +188,7 @@ app.get('/api/aqi/current', async (c) => {
     return c.json({ error: 'Latitude and longitude required' }, 400);
   }
 
-  // For now, return mock data - will integrate real API later
+  // For now, return mock data
   const mockData = generateMockAQIData(parseFloat(lat), parseFloat(lng), location || 'Unknown');
   
   return c.json(mockData);
@@ -251,8 +238,8 @@ app.post('/api/chat', async (c) => {
 // HELPER FUNCTIONS
 // ============================================
 
-function generateMockAQIData(lat: number, lng: number, locationName: string) {
-  const random = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+function generateMockAQIData(lat, lng, locationName) {
+  const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
   const aqi = random(10, 350);
   
   let category = 'Good';
@@ -314,31 +301,7 @@ function generateMockAQIData(lat: number, lng: number, locationName: string) {
   };
 }
 
-// ============================================
-// HTML ROUTE - Serve React App
-// ============================================
-
-app.get('*', (c) => {
-  return c.html(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Quality - Air Quality & Health Advisor</title>
-    <meta name="description" content="Real-time air quality monitoring and personalized health recommendations powered by AI">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: system-ui, -apple-system, sans-serif; }
-      #root { width: 100%; height: 100vh; }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-    <script type="module" src="/src/client.tsx"></script>
-</body>
-</html>`);
-});
-
-export default app;
+// Export for Cloudflare Pages Functions
+export function onRequest(context) {
+  return app.fetch(context.request, context.env, context);
+}
